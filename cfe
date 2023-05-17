@@ -37,3 +37,4 @@ CN3_CS4 (.*)(?=cs4)
 CS4_CS1 (.*)(?=cs1)
 CS4_CS5 (.*)(?=cs5)
 ALL_TO_END '.*
+MSG_EQ (\=)

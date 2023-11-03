@@ -1,0 +1,29 @@
+SYSLOG_CUSTOM (?:%{SYSLOGTIMESTAMP:timestamp}|%{TIMESTAMP_ISO8601:timestamp})(?: %{SYSLOGFACILITY})?(?: %{SYSLOGHOST:host-hostname})
+SYSLOG5424PRINTASCII [!-~]+
+SYSLOGBASE2 (?:%{SYSLOGTIMESTAMP:timestamp}|%{TIMESTAMP_ISO8601:timestamp})(?: %{SYSLOGFACILITY})?(?: %{SYSLOGHOST:host-hostname})?(?: %{SYSLOGPROG}:)?
+SYSLOGPAMSESSION %{SYSLOGBASE} (?=%{GREEDYDATA:message})%{WORD:[system][auth][pam][module]}\(%{DATA:[system][auth][pam][origin]}\): session %{WORD:[system][auth][pam][session_state]} for user %{USERNAME:[user][name]}(?: by %{GREEDYDATA})?
+CRON_ACTION [A-Z ]+
+CRONLOG %{SYSLOGBASE} \(%{USER:[user][name]}\) %{CRON_ACTION:[system][cron][action]} \(%{DATA:message}\)
+SYSLOGLINE %{SYSLOGBASE2} %{GREEDYDATA:message}
+SYSLOG5424PRI <%{NONNEGINT:[log][syslog][priority]:int}>
+SYSLOG5424SD \[%{DATA}\]+
+SYSLOG5424BASE %{SYSLOG5424PRI}%{NONNEGINT:[system][syslog][version]} +(?:-|%{TIMESTAMP_ISO8601:timestamp}) +(?:-|%{IPORHOST:[host][hostname]}) +(?:-|%{SYSLOG5424PRINTASCII:[process][name]}) +(?:-|%{POSINT:[process][pid]:int}) +(?:-|%{SYSLOG5424PRINTASCII:[event][code]}) +(?:-|%{SYSLOG5424SD:[system][syslog][structured_data]})?
+SYSLOG5424LINE %{SYSLOG5424BASE} +%{GREEDYDATA:message}
+SPACE \s
+SPACE2 \s*
+YEAR (?>\d\d){1,2}
+HOUR (?:2[0123]|[01]?[0-9])
+MINUTE (?:[0-5][0-9])
+MONTHNUM (?:0?[1-9]|1[0-2])
+MONTHDAY (?:(?:0[1-9])|(?:[12][0-9])|(?:3[01])|[1-9])
+TIME (?!<[0-9])%{HOUR}:%{MINUTE}(?::%{SECOND})(?![0-9])
+HOSTNAME \b(?:[0-9A-Za-z][0-9A-Za-z-]{0,62})(?:\.(?:[0-9A-Za-z][0-9A-Za-z-]{0,62}))*(\.?|\b)
+WORD \b\w+\b
+MSG_DUSER (.*)(?=devname)
+MSG_TO_MSG (.*)(?=msg)
+MSG_TO_OPERATOR (.*)(?=operation)
+MSG_TO_PERFORMED (.*)(?=performed_on)
+MSG_TO_CHANGES (.*)(?=changes)
+MSG_TO_USER (.*)(?=user)
+MSG (.*)
+FORTI_DATE %{YEAR:year}\-%{MONTHNUM:month}\-%{MONTHDAY:day}
